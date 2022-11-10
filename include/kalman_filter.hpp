@@ -30,14 +30,19 @@ namespace KalmanFilter {
       U << 0, control_signal, 0;
       // U is the input vector
 
+      Eigen::Matrix<double, 3, 1> G;
+      G << dt, 1, 0;
+      // std::cout << G << "\n\n";
+      Q = G * G.transpose() * cov;
+      // std::cout << Q << "\n\n";
       // Q is the process noise covariance
 
       predicted_state = (A * previous_state) + U;
-      std::cout << predicted_state << std::endl;
+      predicted_state_covariance = (A * state_covariance * A) + Q;
 
-      // debugging steps
-      state = predicted_state;
-      previous_state = state;
+      std::cout << predicted_state << "\n\n";
+      std::cout << predicted_state_covariance << "\n\n\n";
+
     }
 
     void measure_acceleration(double dt, double acceleration, double cov) {
@@ -59,6 +64,18 @@ namespace KalmanFilter {
       // dt = time
       // position = position measurement
       // cov = position measurement covariance
+
+      Eigen::Matrix<double, 1, 3> C;
+      C.setZero();
+      C(0, 0) = 1;
+      double y = position - (C * predicted_state);
+      // position error between estimate and measured value
+
+      double s = C * predicted_state_covariance * C.transpose() + cov;
+      // TODO find out what s is
+      std::cout << "the error : " << y << "\n\n";
+
+      // C is the sensor measurement matrix
     }
 
     void update() {

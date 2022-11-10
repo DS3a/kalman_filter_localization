@@ -8,7 +8,9 @@ int main(int argc, char ** argv)
 
   KalmanFilter::LinearKalmanFilter lkf(0.01);
   printf("current position: %f\n\n", lkf.get_position());
-  for(int i=0; i<11; i++)
-    lkf.predict(0.01, 0.2, 0.01);
+  //for(int i=0; i<11; i++)
+  lkf.predict(0.01, 0.2, 0.01);
+
+  lkf.measure_position(0.01, 0.51, 0.01);
   return 0;
 }
