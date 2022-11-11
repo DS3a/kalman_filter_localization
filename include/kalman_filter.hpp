@@ -72,7 +72,14 @@ namespace KalmanFilter {
       // position error between estimate and measured value
 
       double s = C * predicted_state_covariance * C.transpose() + cov;
-      // TODO find out what s is
+      // s is the measurement covariance
+
+      Eigen::Matrix<double, 3, 1> K = predicted_state_covariance * C.transpose() * 1.0 / s;
+
+      state = predicted_state + K*y;
+      state_covariance =  (Eigen::Matrix<double, 3, 3>::Identity() - K*C) * predicted_state_covariance;
+
+
       std::cout << "the error : " << y << "\n\n";
 
       // C is the sensor measurement matrix
@@ -81,7 +88,10 @@ namespace KalmanFilter {
     void update() {
       // function to update the current state
       previous_state = state;
+      state = predicted_state;
 
+      previous_state_covariance = state_covariance;
+      state_covariance = predicted_state_covariance;
       // modify state based on sensor measurements
     }
 
